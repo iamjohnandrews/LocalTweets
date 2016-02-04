@@ -24,7 +24,7 @@ static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp"
 static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets.json";
 
 @interface ViewController ()
-
+@property (strong, nonatomic) NSMutableArray *localTweets;
 @end
 
 @implementation ViewController
@@ -41,13 +41,13 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 
 #pragma mark TableView DataSource Methods
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.localTweets.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TweetTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tweet"];
-    
+    cell.tweet = self.localTweets[indexPath.row];
     
     return cell;
 }
