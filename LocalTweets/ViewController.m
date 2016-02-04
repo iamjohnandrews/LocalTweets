@@ -15,6 +15,7 @@
  Relative timestamp (e.g. 5 minutes ago, 2 hours ago, 1 week ago)
 */
 #import "ViewController.h"
+#import <Accounts/Accounts.h>
 
 static NSString *TWITTER_CONSUMER_KEY = @"fx95oKhMHYgytSBmiAqQ";
 static NSString *TWITTER_CONSUMER_SEC = @"0zfaijLMWMYTwVosdqFTL3k58JhRjZNxd2q0i9cltls";
@@ -33,6 +34,7 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
@@ -110,6 +112,8 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
                                             requestMethod:SLRequestMethodGET
                                                       URL:url
                                                parameters:params];
+    request.account = [self getTwitterAccountAuthentication];
+    
     ViewController *__weak weakSelf = self;
 
     [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
@@ -132,7 +136,18 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 }
 
 - (void)parseResponse:(NSDictionary *)responseObject {
+    NSLog(@"Tweets %@", responseObject);
+}
+
+- (ACAccount *)getTwitterAccountAuthentication {
+
+    ACAccountStore *store = [[ACAccountStore alloc] init];
+    ACAccountType *twitterAccountType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    ACAccount *account = [[ACAccount alloc] initWithAccountType:twitterAccountType];
     
+    account.credential = [[ACAccountCredential alloc] initWithOAuthToken:OAUTH_TOKEN tokenSecret:OAUTH_SECRET];
+    
+    return account;
 }
 
 #pragma mark TableView DataSource Methods
