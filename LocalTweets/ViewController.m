@@ -33,10 +33,17 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.locatinManager.delegate = self;
-    self.locatinManager.desiredAccuracy = kCLLocationAccuracyBest;
-    [self.locatinManager startUpdatingLocation];
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        [self.locationManager startUpdatingLocation];
+    } else {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+
     self.tableView.dataSource = self;
     self.tableView.estimatedRowHeight = 44.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -63,6 +70,11 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 }
 
 #pragma mark - CLLocation Manager Delegate Methods
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    //assumes, for this demo app, that user always accepts
+    NSLog(@"location status %d", status);
+    [self.locationManager startUpdatingLocation];
+}
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     [self.spinner stopAnimating];
@@ -81,8 +93,10 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    NSLog(@"Why do you hate me newLocation %@", newLocation);
     if (newLocation) {
         [self getLocalTweetsFrom:newLocation];
+        [self.locationManager stopUpdatingLocation];
     }
 }
 
@@ -106,12 +120,14 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
         }
         
         NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData
-                                                                     options:NSJSONReadingMutableLeaves
+                                                                     options:0
                                                                        error:nil];
-        if (responseJSON) {
-            [self parseResponse:responseJSON];
+        [self parseResponse:responseJSON];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             [weakSelf.spinner stopAnimating];
-        }
+            [weakSelf.tableView reloadData];
+        }];
     }];
 }
 

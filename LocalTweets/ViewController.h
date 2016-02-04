@@ -16,6 +16,6 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchBar;
-@property (strong, nonatomic) CLLocationManager *locatinManager;
+@property (strong, nonatomic) CLLocationManager *locationManager;
 @end
 
