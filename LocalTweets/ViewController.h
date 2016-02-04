@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "Tweet.h"
 #import "TweetTableViewCell.h"
+#import <CoreLocation/CoreLocation.h>
+#import <Social/Social.h>
 
-@interface ViewController : UIViewController <UITableViewDataSource>
+@interface ViewController : UIViewController <UITableViewDataSource, CLLocationManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchBar;
-
+@property (strong, nonatomic) CLLocationManager *locatinManager;
 @end
 

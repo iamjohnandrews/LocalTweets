@@ -17,6 +17,8 @@
 		7FEF7B591C60EB48001DE497 /* LocalTweetsUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF7B581C60EB48001DE497 /* LocalTweetsUITests.m */; };
 		7FEF7B691C60F42F001DE497 /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF7B681C60F42F001DE497 /* Tweet.m */; };
 		7FEF7B6D1C60F503001DE497 /* TweetTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FEF7B6C1C60F503001DE497 /* TweetTableViewCell.m */; };
+		7FEF7B731C63B994001DE497 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FEF7B721C63B994001DE497 /* Social.framework */; };
+		7FEF7B751C63BBA9001DE497 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FEF7B741C63BBA9001DE497 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		7FEF7B681C60F42F001DE497 /* Tweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweet.m; sourceTree = "<group>"; };
 		7FEF7B6B1C60F503001DE497 /* TweetTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetTableViewCell.h; sourceTree = "<group>"; };
 		7FEF7B6C1C60F503001DE497 /* TweetTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetTableViewCell.m; sourceTree = "<group>"; };
+		7FEF7B721C63B994001DE497 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		7FEF7B741C63BBA9001DE497 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +68,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FEF7B751C63BBA9001DE497 /* CoreLocation.framework in Frameworks */,
+				7FEF7B731C63B994001DE497 /* Social.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +93,8 @@
 		7FEF7B271C60EB47001DE497 = {
 			isa = PBXGroup;
 			children = (
+				7FEF7B741C63BBA9001DE497 /* CoreLocation.framework */,
+				7FEF7B721C63B994001DE497 /* Social.framework */,
 				7FEF7B321C60EB47001DE497 /* LocalTweets */,
 				7FEF7B4C1C60EB48001DE497 /* LocalTweetsTests */,
 				7FEF7B571C60EB48001DE497 /* LocalTweetsUITests */,
