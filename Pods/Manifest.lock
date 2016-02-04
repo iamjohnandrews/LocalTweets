@@ -1,0 +1,10 @@
+PODS:
+  - FHSTwitterEngine (2.0.2)
+
+DEPENDENCIES:
+  - FHSTwitterEngine (~> 2.0)
+
+SPEC CHECKSUMS:
+  FHSTwitterEngine: f431cd4057e74336d3869023987b2136d9322061
+
+COCOAPODS: 0.38.2
