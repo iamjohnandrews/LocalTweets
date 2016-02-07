@@ -699,6 +699,9 @@ extern NSString * const FHSErrorDomain;
  */
 - (id)searchTweetsWithQuery:(NSString *)q count:(int)count resultType:(FHSTwitterEngineResultType)resultType unil:(NSDate *)untilDate sinceID:(NSString *)sinceID maxID:(NSString *)maxID;
 
+//My method
+- (id)searchForTweetsWithQuery:(NSString *)q andLocation:(NSString *)coordinates;
+
 /**
  Get followers ids.
  @return List of follower ids.

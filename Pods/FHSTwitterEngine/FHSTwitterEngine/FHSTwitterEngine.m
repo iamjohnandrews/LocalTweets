@@ -436,6 +436,24 @@ id removeNull(id rootObject) {
     return [self sendGETRequestForURL:baseURL andParams:@{ @"include_entities":(_includeEntities?@"true":@"false"), @"count":@(count).stringValue, @"q":q }];
 }
 
+- (id)searchForTweetsWithQuery:(NSString *)q andLocation:(NSString *)coordinates {
+    
+    if (q.length == 0) {
+        return [NSError badRequestError];
+    }
+    
+    if (q.length > 1000) {
+        q = [q substringToIndex:1000];
+    }
+    
+    NSURL *baseURL = [NSURL URLWithString:url_users_search];
+    return [self sendGETRequestForURL:baseURL andParams:@{ @"include_entities":(_includeEntities?@"true":@"false"),
+                                                           @"geocode":coordinates,
+                                                           @"q":q,
+                                                           @"result_type":@"recent",
+                                                           @"count":@"20"}];
+}
+
 - (id)searchTweetsWithQuery:(NSString *)q count:(int)count resultType:(FHSTwitterEngineResultType)resultType unil:(NSDate *)untilDate sinceID:(NSString *)sinceID maxID:(NSString *)maxID {
     
     if (count == 0) {
@@ -452,7 +470,9 @@ id removeNull(id rootObject) {
     
     NSURL *baseURL = [NSURL URLWithString:url_search_tweets];
     
-    NSMutableDictionary *params = [@{ @"include_entities":(_includeEntities?@"true":@"false"), @"count":@(count).stringValue, @"q":q } mutableCopy];
+    NSMutableDictionary *params = [@{ @"include_entities":(_includeEntities?@"true":@"false"),
+                                      @"count":@(count).stringValue,
+                                      @"q":q } mutableCopy];
     
     [_dateFormatter setDateFormat:@"YYYY-MM-DD"];
     params[@"until"] = [_dateFormatter stringFromDate:untilDate];

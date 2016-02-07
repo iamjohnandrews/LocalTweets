@@ -20,7 +20,7 @@
 
 
 @interface Tweet : NSObject
-@property (nonatomic, strong) NSString *tweet;
+@property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) NSString *screenName;
 @property (nonatomic, strong) NSString *avatar;
 @property (nonatomic, strong) NSString *tweetPic;

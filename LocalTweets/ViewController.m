@@ -15,7 +15,7 @@
  Relative timestamp (e.g. 5 minutes ago, 2 hours ago, 1 week ago)
 */
 #import "ViewController.h"
-#import <Accounts/Accounts.h>
+#import "FHSTwitterEngine.h"
 
 static NSString *TWITTER_CONSUMER_KEY = @"fx95oKhMHYgytSBmiAqQ";
 static NSString *TWITTER_CONSUMER_SEC = @"0zfaijLMWMYTwVosdqFTL3k58JhRjZNxd2q0i9cltls";
@@ -24,10 +24,17 @@ static NSString *OAUTH_SECRET = @"iEzxeJjEPnyODVcoDYt5MVvrg90Jx2TOetGdNeol6PeYp"
 
 static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets.json";
 
-@interface ViewController ()
-@property (strong, nonatomic) NSMutableArray *localTweets;
-@property (nonatomic, strong) UIActivityIndicatorView *spinner;
+static NSString *screenName = @"screen_name";
+static NSString *tweetPic = @"media_url";
+static NSString *avatar = @"profile_image_url";
+static NSString *createdAt = @"created_at";
 
+
+@interface ViewController () <FHSTwitterEngineAccessTokenDelegate>
+@property (strong, nonatomic) NSMutableArray *localTweets;
+@property (strong, nonatomic) UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) NSOperationQueue *imageOperationQueue;
+@property (nonatomic, strong) NSCache *imageCache;
 @end
 
 @implementation ViewController
@@ -50,7 +57,8 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
     self.tableView.estimatedRowHeight = 44.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
-    
+    self.imageOperationQueue = [[NSOperationQueue alloc]init];
+    self.imageCache = [[NSCache alloc] init];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -72,6 +80,7 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
 }
 
 #pragma mark - CLLocation Manager Delegate Methods
+
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     //assumes, for this demo app, that user always accepts
     NSLog(@"location status %d", status);
@@ -102,52 +111,80 @@ static NSString *twitterBaseAPIURL = @"https://api.twitter.com/1.1/search/tweets
     }
 }
 
-#pragma mark Networking Methods
-- (void)getLocalTweetsFrom:(CLLocation *)location {
-    NSURL* url = [NSURL URLWithString:twitterBaseAPIURL];
-    NSString *coordinates = [NSString stringWithFormat:@"%f, %f, 5mi", location.coordinate.latitude, location.coordinate.longitude ];
-    NSDictionary* params = @{@"q" : self.searchBar.text, @"geocode" : coordinates};
-    
-    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                            requestMethod:SLRequestMethodGET
-                                                      URL:url
-                                               parameters:params];
-    request.account = [self getTwitterAccountAuthentication];
-    
-    ViewController *__weak weakSelf = self;
+#pragma mark FHSTwitterEngine Delegate Methods
 
-    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-        
-        if (error) {
-            NSLog(@"There was an error reading your Twitter feed. %@", error.localizedDescription);
-            return;
+- (void)storeAccessToken:(NSString *)accessToken {
+    [[NSUserDefaults standardUserDefaults]setObject:accessToken forKey:@"SavedAccessHTTPBody"];
+}
+
+- (NSString *)loadAccessToken {
+    return [[NSUserDefaults standardUserDefaults]objectForKey:@"SavedAccessHTTPBody"];
+}
+
+#pragma mark Networking Methods
+
+- (void)getLocalTweetsFrom:(CLLocation *)location {
+    [[FHSTwitterEngine sharedEngine] setDelegate:self];
+    
+    FHSToken *token = [[FHSToken alloc] init];
+    token.key = OAUTH_TOKEN;
+    token.secret = OAUTH_SECRET;
+    [FHSTwitterEngine sharedEngine].accessToken = token;
+//    [[FHSTwitterEngine sharedEngine] loadAccessToken];
+    
+    
+    [[FHSTwitterEngine sharedEngine] permanentlySetConsumerKey:TWITTER_CONSUMER_KEY andSecret:TWITTER_CONSUMER_SEC];
+//    id something = [[FHSTwitterEngine sharedEngine] searchUsersWithQuery:@"food" andCount:100];
+    
+  
+    NSString *coordinates = [NSString stringWithFormat:@"%f,%f,5mi", location.coordinate.latitude, location.coordinate.longitude ];
+    
+    [self.imageOperationQueue addOperationWithBlock:^{
+        NSArray *tweets = [[FHSTwitterEngine sharedEngine] searchForTweetsWithQuery:@"football" andLocation:coordinates];
+        // searchForTweetsWithQuery is a synchronous NSURLRequest call
+        if (tweets) {
+            [self parseResponse:tweets];
+            
+            ViewController *__weak weakSelf = self;
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [weakSelf.spinner stopAnimating];
+                [weakSelf.tableView reloadData];
+            }];
         }
-        
-        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:responseData
-                                                                     options:0
-                                                                       error:nil];
-        [self parseResponse:responseJSON];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            [weakSelf.spinner stopAnimating];
-            [weakSelf.tableView reloadData];
-        }];
     }];
 }
 
-- (void)parseResponse:(NSDictionary *)responseObject {
-    NSLog(@"Tweets %@", responseObject);
+- (void)parseResponse:(NSArray *)responseObject {
+    
+    for (NSDictionary *pulledTweets in responseObject) {
+        Tweet *tweet = [[Tweet alloc] init];
+        tweet.timestamp = [self convertToDateFrom:pulledTweets[createdAt]];
+        tweet.avatar = pulledTweets[avatar];
+        tweet.screenName = pulledTweets[screenName];
+        tweet.text = pulledTweets[@"text"];
+        tweet.tweetPic = [self parseTweetPicURL:pulledTweets[@"status"]];
+        
+        [self.localTweets addObject:tweet];
+    }
+    [self.tableView reloadData];
 }
 
-- (ACAccount *)getTwitterAccountAuthentication {
+- (NSDate *)convertToDateFrom:(NSString *)string {
+    //"Tue Jul 24 09:18:08 +0000 2012"
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.locale = [NSLocale currentLocale];
+    [dateFormatter setDateFormat:@"EEE', MMM dd HH:mm:ss ZZZZ"];
+    
+    return [dateFormatter dateFromString:string];
+}
 
-    ACAccountStore *store = [[ACAccountStore alloc] init];
-    ACAccountType *twitterAccountType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    ACAccount *account = [[ACAccount alloc] initWithAccountType:twitterAccountType];
+- (NSString *)parseTweetPicURL:(NSDictionary *)dict {
+    NSArray *media = [dict[@"extended_entities"] objectForKey:@"media"];
+    NSString *picURL = [media.firstObject objectForKey:tweetPic];
+    NSLog(@"picURL = %@", picURL);
     
-    account.credential = [[ACAccountCredential alloc] initWithOAuthToken:OAUTH_TOKEN tokenSecret:OAUTH_SECRET];
-    
-    return account;
+    return picURL;
 }
 
 #pragma mark TableView DataSource Methods

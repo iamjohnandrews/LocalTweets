@@ -18,7 +18,7 @@
     }
     self.userName.text = tweet.screenName;
     self.avatar.image = [self loadImagefrom:[NSURL URLWithString:tweet.avatar]];
-    self.tweetBody.text = tweet.tweet;
+    self.tweetBody.text = tweet.text;
     self.timeFromNow.text = [self formateTimestamp:tweet.timestamp];
     self.location.text = @"within 5 miles";
 }
