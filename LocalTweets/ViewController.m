@@ -106,7 +106,8 @@ static NSString *createdAt = @"created_at";
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     NSLog(@"Why do you hate me newLocation %@", newLocation);
     if (newLocation) {
-        [self getLocalTweetsFrom:newLocation];
+        [self setUpTwitterToken];
+        [self getLocalTweetsFrom:newLocation forSubject:@"trending"];
         [self.locationManager stopUpdatingLocation];
     }
 }
@@ -121,27 +122,26 @@ static NSString *createdAt = @"created_at";
     return [[NSUserDefaults standardUserDefaults]objectForKey:@"SavedAccessHTTPBody"];
 }
 
-#pragma mark Networking Methods
-
-- (void)getLocalTweetsFrom:(CLLocation *)location {
+- (void)setUpTwitterToken {
     [[FHSTwitterEngine sharedEngine] setDelegate:self];
-    
     FHSToken *token = [[FHSToken alloc] init];
     token.key = OAUTH_TOKEN;
     token.secret = OAUTH_SECRET;
     [FHSTwitterEngine sharedEngine].accessToken = token;
-//    [[FHSTwitterEngine sharedEngine] loadAccessToken];
-    
     
     [[FHSTwitterEngine sharedEngine] permanentlySetConsumerKey:TWITTER_CONSUMER_KEY andSecret:TWITTER_CONSUMER_SEC];
-//    id something = [[FHSTwitterEngine sharedEngine] searchUsersWithQuery:@"food" andCount:100];
-    
+}
+
+#pragma mark Networking Methods
+
+- (void)getLocalTweetsFrom:(CLLocation *)location forSubject:(NSString *)topic {
   
     NSString *coordinates = [NSString stringWithFormat:@"%f,%f,5mi", location.coordinate.latitude, location.coordinate.longitude ];
     
     [self.imageOperationQueue addOperationWithBlock:^{
-        NSArray *tweets = [[FHSTwitterEngine sharedEngine] searchForTweetsWithQuery:@"football" andLocation:coordinates];
+        NSArray *tweets = [[FHSTwitterEngine sharedEngine] searchForTweetsWithQuery:topic andLocation:coordinates];
         // searchForTweetsWithQuery is a synchronous NSURLRequest call
+        
         if (tweets) {
             [self parseResponse:tweets];
             

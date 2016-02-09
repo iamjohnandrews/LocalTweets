@@ -24,7 +24,23 @@
 }
 
 - (NSString *)formateTimestamp:(NSDate *)time {
-    NSString *timefromNow;
+    NSString *timefromNow = @"?";
+    
+    NSCalendarUnit units = NSCalendarUnitSecond | NSCalendarUnitMinute | NSCalendarUnitHour | NSCalendarUnitDay;
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:units
+                                                                   fromDate:time
+                                                                     toDate:[NSDate date]
+                                                                    options:0];
+    if (components.day >= 1) {
+        timefromNow =  [NSString stringWithFormat:@"%ldd", (long)components.day];
+    } else if (components.hour < 24) {
+        timefromNow =  [NSString stringWithFormat:@"%ldh", (long)components.hour];
+    } else if (components.minute < 60) {
+        timefromNow =  [NSString stringWithFormat:@"%ldm", (long)components.minute];
+    } else if (components.second < 60) {
+        timefromNow = [NSString stringWithFormat:@"%lds", (long)components.second];
+    }
     
     return timefromNow;
 }
