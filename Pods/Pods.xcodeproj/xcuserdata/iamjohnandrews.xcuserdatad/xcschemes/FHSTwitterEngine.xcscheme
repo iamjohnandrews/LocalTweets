@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F203D85E9A9965A93904B6BF"
+               BlueprintIdentifier = "623AFAF8D5598C9AEC1732E8"
                BuildableName = "libFHSTwitterEngine.a"
                BlueprintName = "FHSTwitterEngine"
                ReferencedContainer = "container:Pods.xcodeproj">

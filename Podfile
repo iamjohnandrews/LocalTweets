@@ -3,6 +3,7 @@
 
 target 'LocalTweets' do
 pod 'FHSTwitterEngine', '~> 2.0'
+pod 'AFNetworking', '~> 3.0'
 end
 
 target 'LocalTweetsTests' do

@@ -16,6 +16,7 @@
 */
 #import "ViewController.h"
 #import "FHSTwitterEngine.h"
+#import "UIImageView+AFNetworking.h"
 
 static NSString *TWITTER_CONSUMER_KEY = @"fx95oKhMHYgytSBmiAqQ";
 static NSString *TWITTER_CONSUMER_SEC = @"0zfaijLMWMYTwVosdqFTL3k58JhRjZNxd2q0i9cltls";
@@ -160,8 +161,10 @@ static NSString *createdAt = @"created_at";
         tweet.timestamp = [self convertToDateFrom:pulledTweets[createdAt]];
         tweet.avatar = pulledTweets[avatar];
         tweet.screenName = pulledTweets[screenName];
-        tweet.text = pulledTweets[@"text"];
-        tweet.tweetPic = [self parseTweetPicURL:pulledTweets[@"status"]];
+        
+        NSDictionary *status = pulledTweets[@"status"];
+        tweet.text = status[@"text"];
+        tweet.tweetPic = [self parseTweetPicURL:status];
         
         [self.localTweets addObject:tweet];
     }
@@ -169,7 +172,6 @@ static NSString *createdAt = @"created_at";
 }
 
 - (NSDate *)convertToDateFrom:(NSString *)string {
-    //"Tue Jul 24 09:18:08 +0000 2012"
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.locale = [NSLocale currentLocale];
     [dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZ yyyy"];
@@ -196,7 +198,26 @@ static NSString *createdAt = @"created_at";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TweetTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tweet"];
-    cell.tweet = self.localTweets[indexPath.row];
+    Tweet *tweet = self.localTweets[indexPath.row];
+    cell.tweet = tweet;
+    
+    __weak TweetTableViewCell *weakCell = cell;
+    [cell.avatar setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:tweet.avatar]]
+                          placeholderImage:nil
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                       weakCell.avatar.image = image;
+                                       [weakCell setNeedsLayout];
+                                   } failure:nil];
+    if (tweet.tweetPic) {
+        [cell.tweetPic setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:tweet.tweetPic]]
+                           placeholderImage:nil
+                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                        weakCell.tweetPic.image = image;
+                                        [weakCell setNeedsLayout];
+                                    } failure:nil];
+    } else {
+        cell.tweetPicHieghtConstraint.constant = 0;
+    }
     
     return cell;
 }

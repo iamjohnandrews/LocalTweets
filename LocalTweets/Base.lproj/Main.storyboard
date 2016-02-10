@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="317" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="2U8-kZ-9A4">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="317" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="2U8-kZ-9A4">
                                 <rect key="frame" x="0.0" y="49" width="600" height="551"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -35,17 +35,17 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fpS-u6-AoI">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 </imageView>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="lMM-kU-HuU">
-                                                    <rect key="frame" x="108" y="34" width="484" height="81"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="240" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="lMM-kU-HuU">
+                                                    <rect key="frame" x="108" y="34" width="484" height="51"/>
+                                                    <color key="backgroundColor" red="0.95361821338383834" green="0.95361821338383834" blue="0.95361821338383834" alpha="1" colorSpace="calibratedRGB"/>
                                                     <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2nL-TK-ucC">
-                                                    <rect key="frame" x="108" y="123" width="484" height="126"/>
+                                                    <rect key="frame" x="108" y="93" width="484" height="156"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="126" id="J8B-ZP-Fn7"/>
+                                                        <constraint firstAttribute="height" priority="250" constant="156" id="J8B-ZP-Fn7"/>
                                                     </constraints>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NDX-yN-tH1">
@@ -88,7 +88,7 @@
                                                 <constraint firstItem="lMM-kU-HuU" firstAttribute="leading" secondItem="99l-po-X46" secondAttribute="leading" id="K5B-YN-e0u"/>
                                                 <constraint firstItem="fpS-u6-AoI" firstAttribute="leading" secondItem="cEs-kY-t7E" secondAttribute="leadingMargin" constant="-8" id="LOr-ae-npn"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="fpS-u6-AoI" secondAttribute="bottom" constant="208" id="NF6-Td-qVv"/>
-                                                <constraint firstItem="2nL-TK-ucC" firstAttribute="top" secondItem="lMM-kU-HuU" secondAttribute="bottom" constant="8" symbolic="YES" id="QoS-z4-VG7"/>
+                                                <constraint firstItem="2nL-TK-ucC" firstAttribute="top" secondItem="lMM-kU-HuU" secondAttribute="bottom" constant="8" id="QoS-z4-VG7"/>
                                                 <constraint firstItem="lMM-kU-HuU" firstAttribute="top" secondItem="99l-po-X46" secondAttribute="bottom" constant="8" id="UHn-34-cIO"/>
                                                 <constraint firstItem="2nL-TK-ucC" firstAttribute="trailing" secondItem="cEs-kY-t7E" secondAttribute="trailingMargin" id="VQN-H0-DDs"/>
                                                 <constraint firstItem="MfA-oS-Sqk" firstAttribute="top" secondItem="cEs-kY-t7E" secondAttribute="topMargin" constant="-3" id="Y0f-7g-aEK"/>
