@@ -12,7 +12,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import <Social/Social.h>
 
-@interface ViewController : UIViewController <UITableViewDataSource, CLLocationManagerDelegate>
+@interface ViewController : UIViewController <UITableViewDataSource, CLLocationManagerDelegate, UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *searchBar;

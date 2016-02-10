@@ -41,17 +41,7 @@ static NSString *createdAt = @"created_at";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways ||
-        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        [self.locationManager startUpdatingLocation];
-    } else {
-        [self.locationManager requestWhenInUseAuthorization];
-    }
+    [self setUpLocationManager];
 
     self.tableView.dataSource = self;
     self.tableView.estimatedRowHeight = 44.0;
@@ -59,12 +49,13 @@ static NSString *createdAt = @"created_at";
     
     self.imageOperationQueue = [[NSOperationQueue alloc]init];
     self.imageCache = [[NSCache alloc] init];
+    self.localTweets = [NSMutableArray new];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     self.title = @"Local Tweets";
-    if (!self.localTweets) {
+    if (!self.localTweets.count) {
         [self displaySpinner];
     }
 }
@@ -81,13 +72,21 @@ static NSString *createdAt = @"created_at";
 
 #pragma mark - CLLocation Manager Delegate Methods
 
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    //assumes, for this demo app, that user always accepts
-    NSLog(@"location status %d", status);
-    [self.locationManager startUpdatingLocation];
+- (void)setUpLocationManager {
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    
+    //assumes, for this demo app, that user always accepts so no delegate method didChangeAuthorizationStatus:
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        [self.locationManager startUpdatingLocation];
+    } else {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    NSLog(@"ERROR %@", error.description);
     [self.spinner stopAnimating];
     UIAlertController *alert=   [UIAlertController alertControllerWithTitle:@"Error"
                                                                      message:@"Failed to Get Your Location"
@@ -104,7 +103,6 @@ static NSString *createdAt = @"created_at";
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    NSLog(@"Why do you hate me newLocation %@", newLocation);
     if (newLocation) {
         [self setUpTwitterToken];
         [self getLocalTweetsFrom:newLocation forSubject:@"trending"];
@@ -156,7 +154,7 @@ static NSString *createdAt = @"created_at";
 }
 
 - (void)parseResponse:(NSArray *)responseObject {
-    
+
     for (NSDictionary *pulledTweets in responseObject) {
         Tweet *tweet = [[Tweet alloc] init];
         tweet.timestamp = [self convertToDateFrom:pulledTweets[createdAt]];
@@ -182,10 +180,13 @@ static NSString *createdAt = @"created_at";
 - (NSString *)parseTweetPicURL:(NSDictionary *)dict {
     NSArray *media = [dict[@"extended_entities"] objectForKey:@"media"];
     NSString *picURL = [media.firstObject objectForKey:tweetPic];
-    NSLog(@"picURL = %@", picURL);
     
     return picURL;
 }
+
+#pragma mark - Textfield Delegate Methods
+
+
 
 #pragma mark TableView DataSource Methods
 

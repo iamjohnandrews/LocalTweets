@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1605" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -126,7 +126,7 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Search" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ife-MD-sMA">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Search" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ife-MD-sMA">
                                 <rect key="frame" x="20" y="11" width="560" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -137,6 +137,8 @@
                             <constraint firstItem="2U8-kZ-9A4" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="BML-nV-SVO"/>
                             <constraint firstAttribute="trailing" secondItem="2U8-kZ-9A4" secondAttribute="trailing" id="cbv-ku-miS"/>
                             <constraint firstItem="2U8-kZ-9A4" firstAttribute="top" secondItem="Ife-MD-sMA" secondAttribute="bottom" constant="8" symbolic="YES" id="cx4-Jg-Gfh"/>
+                            <constraint firstItem="Ife-MD-sMA" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="eR0-SJ-wJB"/>
+                            <constraint firstItem="Ife-MD-sMA" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="nfU-Cc-ton"/>
                             <constraint firstItem="2U8-kZ-9A4" firstAttribute="centerX" secondItem="Ife-MD-sMA" secondAttribute="centerX" id="t3y-8Z-RlB"/>
                             <constraint firstItem="2U8-kZ-9A4" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="uoZ-Hc-Ggc"/>
                         </constraints>
