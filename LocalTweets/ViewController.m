@@ -172,7 +172,7 @@ static NSString *createdAt = @"created_at";
     //"Tue Jul 24 09:18:08 +0000 2012"
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.locale = [NSLocale currentLocale];
-    [dateFormatter setDateFormat:@"EEE', MMM dd HH:mm:ss ZZZZ"];
+    [dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZ yyyy"];
     
     return [dateFormatter dateFromString:string];
 }

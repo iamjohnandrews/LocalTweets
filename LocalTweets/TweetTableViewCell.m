@@ -34,11 +34,14 @@
                                                                     options:0];
     if (components.day >= 1) {
         timefromNow =  [NSString stringWithFormat:@"%ldd", (long)components.day];
-    } else if (components.hour < 24) {
+    }
+    if (components.hour < 24) {
         timefromNow =  [NSString stringWithFormat:@"%ldh", (long)components.hour];
-    } else if (components.minute < 60) {
+    }
+    if (components.minute < 60) {
         timefromNow =  [NSString stringWithFormat:@"%ldm", (long)components.minute];
-    } else if (components.second < 60) {
+    }
+    if (components.second < 60) {
         timefromNow = [NSString stringWithFormat:@"%lds", (long)components.second];
     }
     
