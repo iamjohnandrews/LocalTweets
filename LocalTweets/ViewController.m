@@ -33,9 +33,10 @@ static NSString *createdAt = @"created_at";
 
 @interface ViewController () <FHSTwitterEngineAccessTokenDelegate>
 @property (strong, nonatomic) NSMutableArray *localTweets;
+@property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) UIActivityIndicatorView *spinner;
-@property (nonatomic, strong) NSOperationQueue *imageOperationQueue;
-@property (nonatomic, strong) NSCache *imageCache;
+@property (strong, nonatomic) NSOperationQueue *imageOperationQueue;
+@property (strong, nonatomic) NSCache *imageCache;
 @end
 
 @implementation ViewController
@@ -51,6 +52,8 @@ static NSString *createdAt = @"created_at";
     self.imageOperationQueue = [[NSOperationQueue alloc]init];
     self.imageCache = [[NSCache alloc] init];
     self.localTweets = [NSMutableArray new];
+    
+    self.searchBar.delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -108,6 +111,7 @@ static NSString *createdAt = @"created_at";
         [self setUpTwitterToken];
         [self getLocalTweetsFrom:newLocation forSubject:@"trending"];
         [self.locationManager stopUpdatingLocation];
+        self.currentLocation = newLocation;
     }
 }
 
@@ -140,16 +144,8 @@ static NSString *createdAt = @"created_at";
     [self.imageOperationQueue addOperationWithBlock:^{
         NSArray *tweets = [[FHSTwitterEngine sharedEngine] searchForTweetsWithQuery:topic andLocation:coordinates];
         // searchForTweetsWithQuery is a synchronous NSURLRequest call
-        
         if (tweets) {
             [self parseResponse:tweets];
-            
-            ViewController *__weak weakSelf = self;
-            
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [weakSelf.spinner stopAnimating];
-                [weakSelf.tableView reloadData];
-            }];
         }
     }];
 }
@@ -168,7 +164,11 @@ static NSString *createdAt = @"created_at";
         
         [self.localTweets addObject:tweet];
     }
-    [self.tableView reloadData];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self.spinner stopAnimating];
+        [self.tableView reloadData];
+    }];
 }
 
 - (NSDate *)convertToDateFrom:(NSString *)string {
@@ -188,7 +188,16 @@ static NSString *createdAt = @"created_at";
 
 #pragma mark - Textfield Delegate Methods
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    textField.text = nil;
+    return YES;
+}
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self getLocalTweetsFrom:self.currentLocation forSubject:textField.text];
+//    [textField resignFirstResponder];
+    return YES;
+}
 
 #pragma mark TableView DataSource Methods
 
@@ -202,13 +211,15 @@ static NSString *createdAt = @"created_at";
     cell.tweet = tweet;
     
     __weak TweetTableViewCell *weakCell = cell;
-    [cell.avatar setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:tweet.avatar]]
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:tweet.avatar]];    
+    [cell.avatar setImageWithURLRequest:request
                           placeholderImage:nil
                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                        weakCell.avatar.image = image;
                                        [weakCell setNeedsLayout];
                                    } failure:nil];
     if (tweet.tweetPic) {
+        NSLog(@"Cell %@ has a TweetPic", tweet.screenName);
         [cell.tweetPic setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:tweet.tweetPic]]
                            placeholderImage:nil
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
