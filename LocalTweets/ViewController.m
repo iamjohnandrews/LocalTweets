@@ -5,15 +5,7 @@
 //  Created by John Andrews on 2/2/16.
 //  Copyright © 2016 John Andrews. All rights reserved.
 //
-/*
- search for tweets containing a keyword or keyword phrase that are within a 5 mile radius of the user’s current location
- Avatar image of author
- Screen name of author
- Tweet text
- User location
- Inline photo, if applicable (see below for details)
- Relative timestamp (e.g. 5 minutes ago, 2 hours ago, 1 week ago)
-*/
+
 #import "ViewController.h"
 #import "FHSTwitterEngine.h"
 #import "UIImageView+AFNetworking.h"
@@ -29,6 +21,7 @@ static NSString *screenName = @"screen_name";
 static NSString *tweetPic = @"media_url";
 static NSString *avatar = @"profile_image_url";
 static NSString *createdAt = @"created_at";
+static NSString *location = @"location";
 
 
 @interface ViewController () <FHSTwitterEngineAccessTokenDelegate>
@@ -166,16 +159,13 @@ static NSString *createdAt = @"created_at";
         tweet.timestamp = [self convertToDateFrom:pulledTweets[createdAt]];
         tweet.avatar = pulledTweets[avatar];
         tweet.screenName = pulledTweets[screenName];
-        
+        tweet.location = pulledTweets[location];
+
         NSDictionary *status = pulledTweets[@"status"];
         tweet.text = status[@"text"];
         tweet.tweetPic = [self parseTweetPicURL:status];
         
         [self.localTweets addObject:tweet];
-        
-        if (tweet.tweetPic) {
-            NSLog(@"%@ has a Tweet Picture", tweet.screenName);
-        }
     }
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -209,6 +199,7 @@ static NSString *createdAt = @"created_at";
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self getLocalTweetsFrom:self.currentLocation forSubject:textField.text];
     [textField resignFirstResponder];
+    [self.tableView setContentOffset:CGPointZero animated:YES];
     return YES;
 }
 

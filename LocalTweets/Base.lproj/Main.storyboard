@@ -42,6 +42,9 @@
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="240" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="lMM-kU-HuU">
                                                     <rect key="frame" x="108" y="34" width="484" height="51"/>
                                                     <color key="backgroundColor" red="0.95361821338383834" green="0.95361821338383834" blue="0.95361821338383834" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="250" id="U6f-22-9iz"/>
+                                                    </constraints>
                                                     <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -123,6 +126,7 @@
                                             <outlet property="location" destination="dW2-ln-wet" id="Yge-0G-xi4"/>
                                             <outlet property="timeFromNow" destination="MfA-oS-Sqk" id="STY-Gj-qZo"/>
                                             <outlet property="tweetBody" destination="lMM-kU-HuU" id="5tI-eb-Ij1"/>
+                                            <outlet property="tweetBodyHieghtContraint" destination="U6f-22-9iz" id="Axu-5o-0aF"/>
                                             <outlet property="tweetPic" destination="2nL-TK-ucC" id="k8Q-Dj-PUF"/>
                                             <outlet property="tweetPicHieghtConstraint" destination="J8B-ZP-Fn7" id="DHx-LN-t26"/>
                                             <outlet property="userName" destination="99l-po-X46" id="akM-n3-ufM"/>

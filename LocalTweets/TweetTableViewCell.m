@@ -13,9 +13,13 @@
 - (void)setTweet:(Tweet *)tweet {
     
     self.userName.text = tweet.screenName;
-    self.tweetBody.text = tweet.text;
     self.timeFromNow.text = [self formateTimestamp:tweet.timestamp];
-    self.location.text = @"within 5 miles";
+    self.location.text = tweet.location;
+    if (tweet.text) {
+        self.tweetBody.text = tweet.text;
+    } else {
+        self.tweetBodyHieghtContraint = 0;
+    }
 }
 
 - (NSString *)formateTimestamp:(NSDate *)time {

@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeFromNow;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetPicHieghtConstraint;
 @property (strong, nonatomic) Tweet *tweet;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetBodyHieghtContraint;
 
 - (IBAction)replyTapped:(UIButton *)sender;
 @end

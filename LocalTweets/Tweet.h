@@ -25,5 +25,5 @@
 @property (nonatomic, strong) NSString *avatar;
 @property (nonatomic, strong) NSString *tweetPic;
 @property (nonatomic, strong) NSDate *timestamp;
-
+@property (nonatomic, strong) NSString *location;
 @end
