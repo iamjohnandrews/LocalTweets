@@ -46,12 +46,11 @@ static NSString *createdAt = @"created_at";
     [self setUpLocationManager];
 
     self.tableView.dataSource = self;
-    self.tableView.estimatedRowHeight = 44.0;
+    self.tableView.estimatedRowHeight = 300.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     self.imageOperationQueue = [[NSOperationQueue alloc]init];
     self.imageCache = [[NSCache alloc] init];
-    self.localTweets = [NSMutableArray new];
     
     self.searchBar.delegate = self;
 }
@@ -74,6 +73,23 @@ static NSString *createdAt = @"created_at";
     [self.spinner startAnimating];
 }
 
+- (void)displayAlertType:(NSString *)alertType withMessage:(NSString *)message {
+    [self.spinner stopAnimating];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertType
+                                                                    message:message
+                                                             preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK"
+                                                 style:UIAlertActionStyleDefault
+                                               handler:^(UIAlertAction * action) {
+                                                   [alert dismissViewControllerAnimated:YES completion:nil];
+                                               }];
+    
+    [alert addAction:ok];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 #pragma mark - CLLocation Manager Delegate Methods
 
 - (void)setUpLocationManager {
@@ -91,19 +107,7 @@ static NSString *createdAt = @"created_at";
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     NSLog(@"ERROR %@", error.description);
-    [self.spinner stopAnimating];
-    UIAlertController *alert=   [UIAlertController alertControllerWithTitle:@"Error"
-                                                                     message:@"Failed to Get Your Location"
-                                                              preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK"
-                                                 style:UIAlertActionStyleDefault
-                                               handler:^(UIAlertAction * action) {
-                                                   [alert dismissViewControllerAnimated:YES completion:nil];
-                                               }];
-    
-    [alert addAction:ok];
-    [self presentViewController:alert animated:YES completion:nil];
+    [self displayAlertType:@"Location Error" withMessage:@"Failed to Get Your Location"];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
@@ -144,13 +148,18 @@ static NSString *createdAt = @"created_at";
     [self.imageOperationQueue addOperationWithBlock:^{
         NSArray *tweets = [[FHSTwitterEngine sharedEngine] searchForTweetsWithQuery:topic andLocation:coordinates];
         // searchForTweetsWithQuery is a synchronous NSURLRequest call
-        if (tweets) {
+        if (tweets.count > 0) {
             [self parseResponse:tweets];
+        } else {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [self displayAlertType:@"Twitter Error" withMessage:@"Failed to Get Your Tweets"];
+            }];
         }
     }];
 }
 
 - (void)parseResponse:(NSArray *)responseObject {
+    self.localTweets = [NSMutableArray new];
 
     for (NSDictionary *pulledTweets in responseObject) {
         Tweet *tweet = [[Tweet alloc] init];
@@ -163,6 +172,10 @@ static NSString *createdAt = @"created_at";
         tweet.tweetPic = [self parseTweetPicURL:status];
         
         [self.localTweets addObject:tweet];
+        
+        if (tweet.tweetPic) {
+            NSLog(@"%@ has a Tweet Picture", tweet.screenName);
+        }
     }
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -189,13 +202,13 @@ static NSString *createdAt = @"created_at";
 #pragma mark - Textfield Delegate Methods
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    textField.text = nil;
+    textField.text = @"";
     return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self getLocalTweetsFrom:self.currentLocation forSubject:textField.text];
-//    [textField resignFirstResponder];
+    [textField resignFirstResponder];
     return YES;
 }
 
@@ -210,27 +223,41 @@ static NSString *createdAt = @"created_at";
     Tweet *tweet = self.localTweets[indexPath.row];
     cell.tweet = tweet;
     
-    __weak TweetTableViewCell *weakCell = cell;
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:tweet.avatar]];    
-    [cell.avatar setImageWithURLRequest:request
-                          placeholderImage:nil
-                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                       weakCell.avatar.image = image;
-                                       [weakCell setNeedsLayout];
-                                   } failure:nil];
-    if (tweet.tweetPic) {
-        NSLog(@"Cell %@ has a TweetPic", tweet.screenName);
-        [cell.tweetPic setImageWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:tweet.tweetPic]]
-                           placeholderImage:nil
-                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                        weakCell.tweetPic.image = image;
-                                        [weakCell setNeedsLayout];
-                                    } failure:nil];
+    UIImage *avatarFromCache = [self.imageCache objectForKey:tweet.avatar];
+    UIImage *tweetPicFromCache = [self.imageCache objectForKey:tweet.tweetPic];
+    
+    if (avatarFromCache) {
+        cell.avatar.image = avatarFromCache;
+    } else {
+        [self getImage:tweet.avatar forCell:cell];
+    }
+    
+    if (tweetPic) {
+        cell.tweetPic.image = tweetPicFromCache;
     } else {
         cell.tweetPicHieghtConstraint.constant = 0;
+        [self getImage:tweet.tweetPic forCell:cell];
     }
     
     return cell;
 }
+
+- (void)getImage:(NSString *)imageURL forCell:(TweetTableViewCell *)cell {
+    __weak TweetTableViewCell *weakCell = cell;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+    [cell.avatar setImageWithURLRequest:request
+                       placeholderImage:nil
+                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                    [self.imageCache setObject:image forKey:imageURL];
+                                    
+                                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                        weakCell.tweetPicHieghtConstraint.constant = 156;
+                                        weakCell.avatar.image = image;
+                                        [weakCell setNeedsLayout];
+                                    }];
+                                } failure:nil];
+}
+
 
 @end

@@ -26,7 +26,7 @@
                                     <constraint firstAttribute="height" constant="551" id="LYM-po-59W"/>
                                 </constraints>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tweet" rowHeight="317" id="CJw-VR-NgY" customClass="TweetTableViewCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="248" verticalCompressionResistancePriority="749" selectionStyle="default" indentationWidth="10" reuseIdentifier="tweet" rowHeight="317" id="CJw-VR-NgY" customClass="TweetTableViewCell">
                                         <rect key="frame" x="0.0" y="28" width="600" height="317"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CJw-VR-NgY" id="cEs-kY-t7E">
@@ -91,7 +91,7 @@
                                                 <constraint firstItem="lMM-kU-HuU" firstAttribute="top" secondItem="MfA-oS-Sqk" secondAttribute="bottom" constant="8" id="Hca-Dj-vYD"/>
                                                 <constraint firstItem="lMM-kU-HuU" firstAttribute="leading" secondItem="99l-po-X46" secondAttribute="leading" id="K5B-YN-e0u"/>
                                                 <constraint firstItem="fpS-u6-AoI" firstAttribute="leading" secondItem="cEs-kY-t7E" secondAttribute="leadingMargin" constant="-8" id="LOr-ae-npn"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="fpS-u6-AoI" secondAttribute="bottom" constant="208" id="NF6-Td-qVv"/>
+                                                <constraint firstAttribute="bottomMargin" relation="lessThanOrEqual" secondItem="fpS-u6-AoI" secondAttribute="bottom" constant="208" id="NF6-Td-qVv"/>
                                                 <constraint firstItem="2nL-TK-ucC" firstAttribute="top" secondItem="lMM-kU-HuU" secondAttribute="bottom" constant="8" id="QoS-z4-VG7"/>
                                                 <constraint firstItem="lMM-kU-HuU" firstAttribute="top" secondItem="99l-po-X46" secondAttribute="bottom" constant="8" id="UHn-34-cIO"/>
                                                 <constraint firstItem="2nL-TK-ucC" firstAttribute="trailing" secondItem="cEs-kY-t7E" secondAttribute="trailingMargin" id="VQN-H0-DDs"/>
@@ -133,7 +133,7 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Search" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ife-MD-sMA">
                                 <rect key="frame" x="20" y="11" width="560" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="search"/>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

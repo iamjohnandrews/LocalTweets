@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocalTweets/ViewController.m"
-            timestampString = "476912119.736738"
+            timestampString = "476928648.175683"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
             landmarkName = "-setUpLocationManager"
             landmarkType = "5">
          </BreakpointContent>
@@ -64,16 +64,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocalTweets/ViewController.m"
-            timestampString = "476912346.265092"
+            timestampString = "476930743.930346"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
+            landmarkName = "-getImage:forCell:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
