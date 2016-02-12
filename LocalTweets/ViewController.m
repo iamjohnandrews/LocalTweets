@@ -229,34 +229,38 @@ static NSString *createdAt = @"created_at";
     if (avatarFromCache) {
         cell.avatar.image = avatarFromCache;
     } else {
-        [self getImage:tweet.avatar forCell:cell];
+        [self getImageURL:tweet.avatar forCell:cell forImage:cell.avatar andIsAvatar:YES];
     }
     
-    if (tweetPic) {
+    if (tweetPicFromCache) {
         cell.tweetPic.image = tweetPicFromCache;
     } else {
         cell.tweetPicHieghtConstraint.constant = 0;
-        [self getImage:tweet.tweetPic forCell:cell];
+        [self getImageURL:tweet.tweetPic forCell:cell forImage:cell.tweetPic andIsAvatar:NO];
     }
     
     return cell;
 }
 
-- (void)getImage:(NSString *)imageURL forCell:(TweetTableViewCell *)cell {
-    __weak TweetTableViewCell *weakCell = cell;
-    
+- (void)getImageURL:(NSString *)imageURL forCell:(TweetTableViewCell *)cell forImage:(UIImageView *)imageView andIsAvatar:(BOOL)isAvatar{
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
-    [cell.avatar setImageWithURLRequest:request
+    [imageView setImageWithURLRequest:request
                        placeholderImage:nil
                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                     [self.imageCache setObject:image forKey:imageURL];
                                     
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                        weakCell.tweetPicHieghtConstraint.constant = 156;
-                                        weakCell.avatar.image = image;
-                                        [weakCell setNeedsLayout];
+                                        if (isAvatar) {
+                                            cell.avatar.image = image;
+                                        } else {
+                                            cell.tweetPicHieghtConstraint.constant = 156;
+                                            cell.tweetPic.image = image;
+                                        }
+                                        [cell setNeedsLayout];
                                     }];
-                                } failure:nil];
+                                } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                    NSLog(@"%@ ERROR: %@", cell.userName, error.description);
+                                }];
 }
 
 
