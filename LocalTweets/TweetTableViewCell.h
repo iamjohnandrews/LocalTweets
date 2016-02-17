@@ -20,5 +20,7 @@
 @property (strong, nonatomic) Tweet *tweet;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetBodyHieghtContraint;
 
+@property (weak, nonatomic) IBOutlet UIButton *replyButton;
+
 - (IBAction)replyTapped:(UIButton *)sender;
 @end

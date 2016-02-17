@@ -168,6 +168,13 @@ static NSString *location = @"location";
         [self.localTweets addObject:tweet];
     }
     
+    [self sortTweetsByDate];
+}
+
+- (void)sortTweetsByDate {
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timestamp" ascending:FALSE];
+    [self.localTweets sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [self.spinner stopAnimating];
         [self.tableView reloadData];
@@ -178,7 +185,7 @@ static NSString *location = @"location";
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.locale = [NSLocale currentLocale];
     [dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZ yyyy"];
-    
+  
     return [dateFormatter dateFromString:string];
 }
 

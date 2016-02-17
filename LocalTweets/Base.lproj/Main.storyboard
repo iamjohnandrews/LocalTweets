@@ -23,7 +23,7 @@
                                 <rect key="frame" x="0.0" y="49" width="600" height="551"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="551" id="LYM-po-59W"/>
+                                    <constraint firstAttribute="height" priority="250" constant="551" id="LYM-po-59W"/>
                                 </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="248" verticalCompressionResistancePriority="749" selectionStyle="default" indentationWidth="10" reuseIdentifier="tweet" rowHeight="317" id="CJw-VR-NgY" customClass="TweetTableViewCell">
@@ -57,7 +57,10 @@
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NDX-yN-tH1">
                                                     <rect key="frame" x="108" y="278" width="46" height="30"/>
-                                                    <state key="normal" title="Reply"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <state key="normal" title="Reply">
+                                                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
                                                     <connections>
                                                         <action selector="replyTapped:" destination="CJw-VR-NgY" eventType="touchUpInside" id="4vM-Rc-xJi"/>
                                                     </connections>
@@ -124,6 +127,7 @@
                                         <connections>
                                             <outlet property="avatar" destination="fpS-u6-AoI" id="JA1-yb-Jqs"/>
                                             <outlet property="location" destination="dW2-ln-wet" id="Yge-0G-xi4"/>
+                                            <outlet property="replyButton" destination="NDX-yN-tH1" id="b7B-83-kP3"/>
                                             <outlet property="timeFromNow" destination="MfA-oS-Sqk" id="STY-Gj-qZo"/>
                                             <outlet property="tweetBody" destination="lMM-kU-HuU" id="5tI-eb-Ij1"/>
                                             <outlet property="tweetBodyHieghtContraint" destination="U6f-22-9iz" id="Axu-5o-0aF"/>
@@ -149,6 +153,7 @@
                             <constraint firstItem="Ife-MD-sMA" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="nfU-Cc-ton"/>
                             <constraint firstItem="2U8-kZ-9A4" firstAttribute="centerX" secondItem="Ife-MD-sMA" secondAttribute="centerX" id="t3y-8Z-RlB"/>
                             <constraint firstItem="2U8-kZ-9A4" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="uoZ-Hc-Ggc"/>
+                            <constraint firstItem="Ife-MD-sMA" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="11" id="yrF-ri-f0e"/>
                         </constraints>
                     </view>
                     <connections>

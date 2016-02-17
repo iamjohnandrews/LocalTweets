@@ -447,11 +447,19 @@ id removeNull(id rootObject) {
     }
     
     NSURL *baseURL = [NSURL URLWithString:url_users_search];
+//    return [self sendGETRequestForURL:baseURL andParams:@{ @"include_entities":(_includeEntities?@"true":@"false"),
+//                                                           @"geocode":coordinates,
+//                                                           @"q":q,
+//                                                           @"result_type":@"recent",
+//                                                           @"count":@"20"}];
+    
+    [_dateFormatter setDateFormat:@"YYYY-MM-dd"];
+    NSString *now = [_dateFormatter stringFromDate:[NSDate date]];
     return [self sendGETRequestForURL:baseURL andParams:@{ @"include_entities":(_includeEntities?@"true":@"false"),
                                                            @"geocode":coordinates,
                                                            @"q":q,
-                                                           @"result_type":@"recent",
-                                                           @"count":@"20"}];
+                                                           @"count":@"20",
+                                                           @"result_type": @"mixed"}];
 }
 
 - (id)searchTweetsWithQuery:(NSString *)q count:(int)count resultType:(FHSTwitterEngineResultType)resultType unil:(NSDate *)untilDate sinceID:(NSString *)sinceID maxID:(NSString *)maxID {

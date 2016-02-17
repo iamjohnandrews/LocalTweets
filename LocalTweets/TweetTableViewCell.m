@@ -8,6 +8,8 @@
 
 #import "TweetTableViewCell.h"
 
+const float imageCorner = 10.0f;
+
 @implementation TweetTableViewCell
 
 - (void)setTweet:(Tweet *)tweet {
@@ -31,9 +33,11 @@
                                                                     options:0];
     if (components.year >=1) {
         return [NSString stringWithFormat:@"%ldy", (long)components.year];
-    } else if (components.month >= 1) {
+    } else
+        if (components.month >= 1) {
         return [NSString stringWithFormat:@"%ldm", (long)components.month];
-    } else if (components.day >= 1) {
+    } else
+        if (components.day >= 1) {
         return [NSString stringWithFormat:@"%ldd", (long)components.day];
     } else if (components.hour >= 1) {
         return [NSString stringWithFormat:@"%ldh", (long)components.hour];
@@ -42,6 +46,21 @@
     } else {
         return [NSString stringWithFormat:@"%lds", (long)components.second];
     }
+}
+
+- (void)awakeFromNib {
+    [self formatReplyButton];
+    [self roundImageEdges];
+}
+
+- (void)formatReplyButton {
+    self.replyButton.backgroundColor = [UIColor lightGrayColor];
+    self.replyButton.layer.cornerRadius = imageCorner - 2;
+}
+
+- (void)roundImageEdges {
+    self.avatar.layer.cornerRadius = imageCorner;
+    self.tweetPic.layer.cornerRadius = imageCorner;
 }
 
 - (IBAction)replyTapped:(UIButton *)sender {
